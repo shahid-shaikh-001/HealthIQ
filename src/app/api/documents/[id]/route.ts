@@ -1,7 +1,6 @@
-import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { authOptions } from "../../../../lib/auth";
 import { prisma } from "../../../../lib/prisma";
+import { requireUser } from "../../../../server/utils/require-user";
 
 type RouteParams = {
   params: Promise<{
@@ -11,38 +10,16 @@ type RouteParams = {
 
 export async function GET(_request: Request, { params }: RouteParams) {
   try {
-    const session = await getServerSession(authOptions);
+    const user = await requireUser();
 
-    if (!session?.user?.email) {
+    if (!user) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Unauthorized",
-        },
+        { success: false, message: "Unauthorized" },
         { status: 401 }
       );
     }
 
     const { id } = await params;
-
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session.user.email,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "User not found",
-        },
-        { status: 404 }
-      );
-    }
 
     const document = await prisma.medicalDocument.findFirst({
       where: {
@@ -56,10 +33,7 @@ export async function GET(_request: Request, { params }: RouteParams) {
 
     if (!document) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Document not found",
-        },
+        { success: false, message: "Document not found" },
         { status: 404 }
       );
     }
@@ -75,6 +49,7 @@ export async function GET(_request: Request, { params }: RouteParams) {
       {
         success: false,
         message: "Failed to fetch document",
+        error: error instanceof Error ? error.message : JSON.stringify(error),
       },
       { status: 500 }
     );
@@ -83,38 +58,16 @@ export async function GET(_request: Request, { params }: RouteParams) {
 
 export async function DELETE(_request: Request, { params }: RouteParams) {
   try {
-    const session = await getServerSession(authOptions);
+    const user = await requireUser();
 
-    if (!session?.user?.email) {
+    if (!user) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Unauthorized",
-        },
+        { success: false, message: "Unauthorized" },
         { status: 401 }
       );
     }
 
     const { id } = await params;
-
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session.user.email,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "User not found",
-        },
-        { status: 404 }
-      );
-    }
 
     const existingDocument = await prisma.medicalDocument.findFirst({
       where: {
@@ -128,10 +81,7 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
 
     if (!existingDocument) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Document not found",
-        },
+        { success: false, message: "Document not found" },
         { status: 404 }
       );
     }
@@ -153,6 +103,7 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
       {
         success: false,
         message: "Failed to delete document",
+        error: error instanceof Error ? error.message : JSON.stringify(error),
       },
       { status: 500 }
     );

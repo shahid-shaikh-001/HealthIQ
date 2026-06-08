@@ -1,8 +1,7 @@
-import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { authOptions } from "../../../../lib/auth";
 import { prisma } from "../../../../lib/prisma";
 import { cloudinary } from "../../../../lib/cloudinary";
+import { requireUser } from "../../../../server/utils/require-user";
 
 export const runtime = "nodejs";
 
@@ -54,9 +53,9 @@ async function uploadToCloudinary(buffer: Buffer, fileName: string) {
 
 export async function POST(request: Request) {
   try {
-    const session = await getServerSession(authOptions);
+    const user = await requireUser();
 
-    if (!session?.user?.email) {
+    if (!user) {
       return NextResponse.json(
         {
           success: false,
@@ -65,24 +64,6 @@ export async function POST(request: Request) {
         { status: 401 }
       );
     }
-
-    const user = await prisma.user.upsert({
-      where: {
-        email: session.user.email,
-      },
-      update: {
-        name: session.user.name,
-        image: session.user.image,
-      },
-      create: {
-        email: session.user.email,
-        name: session.user.name,
-        image: session.user.image,
-      },
-      select: {
-        id: true,
-      },
-    });
 
     const formData = await request.formData();
 

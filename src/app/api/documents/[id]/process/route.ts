@@ -1,7 +1,6 @@
-import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { authOptions } from "../../../../../lib/auth";
 import { prisma } from "../../../../../lib/prisma";
+import { requireUser } from "../../../../../server/utils/require-user";
 import { parseMockMedicalReport } from "../../../../../server/utils/medical-mock-parser";
 
 type RouteParams = {
@@ -12,9 +11,9 @@ type RouteParams = {
 
 export async function POST(_request: Request, { params }: RouteParams) {
   try {
-    const session = await getServerSession(authOptions);
+    const user = await requireUser();
 
-    if (!session?.user?.email) {
+    if (!user) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
         { status: 401 }
@@ -22,24 +21,6 @@ export async function POST(_request: Request, { params }: RouteParams) {
     }
 
     const { id } = await params;
-
-    const user = await prisma.user.upsert({
-      where: {
-        email: session.user.email,
-      },
-      update: {
-        name: session.user.name,
-        image: session.user.image,
-      },
-      create: {
-        email: session.user.email,
-        name: session.user.name,
-        image: session.user.image,
-      },
-      select: {
-        id: true,
-      },
-    });
 
     const document = await prisma.medicalDocument.findFirst({
       where: {

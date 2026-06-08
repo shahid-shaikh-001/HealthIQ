@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
-import { requireUser } from "../../../../server/utils/require-user";
+import { prisma } from "../../../lib/prisma";
+import { requireUser } from "../../../server/utils/require-user";
 
 export async function GET(request: Request) {
   try {
@@ -14,61 +14,54 @@ export async function GET(request: Request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const metricName = searchParams.get("metric");
 
-    if (!metricName) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Metric name is required. Example: ?metric=Hemoglobin",
-        },
-        { status: 400 }
-      );
-    }
+    const status = searchParams.get("status");
+    const name = searchParams.get("name");
 
     const metrics = await prisma.healthMetric.findMany({
       where: {
         userId: user.id,
-        name: {
-          equals: metricName,
-          mode: "insensitive",
-        },
+        ...(status
+          ? {
+              status: status as any,
+            }
+          : {}),
+        ...(name
+          ? {
+              name: {
+                contains: name,
+                mode: "insensitive",
+              },
+            }
+          : {}),
       },
       include: {
         document: {
           select: {
             id: true,
             title: true,
+            documentType: true,
             uploadedAt: true,
           },
         },
       },
       orderBy: {
-        testedAt: "asc",
+        testedAt: "desc",
       },
     });
 
     return NextResponse.json({
       success: true,
-      metric: metricName,
       count: metrics.length,
-      trend: metrics.map((metric) => ({
-        id: metric.id,
-        name: metric.name,
-        value: metric.value,
-        unit: metric.unit,
-        status: metric.status,
-        testedAt: metric.testedAt,
-        document: metric.document,
-      })),
+      metrics,
     });
   } catch (error) {
-    console.error("Fetch health metric trend error:", error);
+    console.error("Fetch health metrics error:", error);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to fetch health metric trend",
+        message: "Failed to fetch health metrics",
         error: error instanceof Error ? error.message : JSON.stringify(error),
       },
       { status: 500 }
