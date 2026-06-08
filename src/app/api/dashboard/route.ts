@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { requireUser } from "../../../server/utils/require-user";
+import { generateRecommendations } from "../../../server/utils/recommendation-engine";
 
 export async function GET() {
   try {
@@ -95,6 +96,17 @@ export async function GET() {
       }),
     ]);
 
+    const recommendations = generateRecommendations(
+      abnormalMetrics.map((metric) => ({
+        name: metric.name,
+        value: metric.value,
+        unit: metric.unit,
+        normalMin: metric.normalMin,
+        normalMax: metric.normalMax,
+        status: metric.status,
+      }))
+    );
+
     return NextResponse.json({
       success: true,
       dashboard: {
@@ -103,11 +115,13 @@ export async function GET() {
           documentCount,
           metricCount,
           abnormalMetricCount: abnormalMetrics.length,
+          recommendationCount: recommendations.length,
         },
         latestHealthScore,
         recentDocuments,
         recentMetrics,
         abnormalMetrics,
+        recommendations,
       },
     });
   } catch (error) {
