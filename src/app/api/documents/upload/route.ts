@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
 import { cloudinary } from "../../../../lib/cloudinary";
 import { requireUser } from "../../../../server/utils/require-user";
+import { validateMedicalFile } from "../../../../server/utils/file-validation";
 
 export const runtime = "nodejs";
 
@@ -70,7 +71,7 @@ export async function POST(request: Request) {
     const file = formData.get("file");
     const title = formData.get("title");
     const documentType = formData.get("documentType");
-
+        
     if (!(file instanceof File)) {
       return NextResponse.json(
         {
@@ -80,7 +81,19 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
+    
+    const fileValidation = validateMedicalFile(file);
+    
+    if (!fileValidation.valid) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: fileValidation.message,
+        },
+        { status: 400 }
+      );
+    }
+    
     if (!title || typeof title !== "string") {
       return NextResponse.json(
         {
