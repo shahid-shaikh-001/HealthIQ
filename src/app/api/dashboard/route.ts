@@ -13,26 +13,110 @@ export async function GET() {
       );
     }
 
-    const documents = await prisma.medicalDocument.findMany({
-      where: {
-        userId: user.id,
-      },
-      orderBy: {
-        uploadedAt: "desc",
-      },
-    });
+    const [
+      latestHealthScore,
+      recentDocuments,
+      recentMetrics,
+      abnormalMetrics,
+      documentCount,
+      metricCount,
+    ] = await Promise.all([
+      prisma.healthScore.findFirst({
+        where: {
+          userId: user.id,
+        },
+        orderBy: {
+          calculatedAt: "desc",
+        },
+      }),
+
+      prisma.medicalDocument.findMany({
+        where: {
+          userId: user.id,
+        },
+        orderBy: {
+          uploadedAt: "desc",
+        },
+        take: 5,
+      }),
+
+      prisma.healthMetric.findMany({
+        where: {
+          userId: user.id,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 8,
+        include: {
+          document: {
+            select: {
+              id: true,
+              title: true,
+              documentType: true,
+              uploadedAt: true,
+            },
+          },
+        },
+      }),
+
+      prisma.healthMetric.findMany({
+        where: {
+          userId: user.id,
+          status: {
+            in: ["LOW", "HIGH", "CRITICAL"],
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          document: {
+            select: {
+              id: true,
+              title: true,
+              documentType: true,
+              uploadedAt: true,
+            },
+          },
+        },
+      }),
+
+      prisma.medicalDocument.count({
+        where: {
+          userId: user.id,
+        },
+      }),
+
+      prisma.healthMetric.count({
+        where: {
+          userId: user.id,
+        },
+      }),
+    ]);
 
     return NextResponse.json({
       success: true,
-      documents,
+      dashboard: {
+        user,
+        stats: {
+          documentCount,
+          metricCount,
+          abnormalMetricCount: abnormalMetrics.length,
+        },
+        latestHealthScore,
+        recentDocuments,
+        recentMetrics,
+        abnormalMetrics,
+      },
     });
   } catch (error) {
-    console.error("Fetch documents error:", error);
+    console.error("Dashboard error:", error);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to fetch documents",
+        message: "Failed to fetch dashboard data",
         error: error instanceof Error ? error.message : JSON.stringify(error),
       },
       { status: 500 }

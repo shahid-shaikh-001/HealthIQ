@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../../lib/prisma";
 import { requireUser } from "../../../../../server/utils/require-user";
-import { parseMockMedicalReport } from "../../../../../server/utils/medical-mock-parser";
+import { parseMedicalReportWithAI } from "../../../../../server/utils/medical-ai-parser";
 
 type RouteParams = {
   params: Promise<{
@@ -10,6 +10,8 @@ type RouteParams = {
 };
 
 export async function POST(_request: Request, { params }: RouteParams) {
+  const { id } = await params;
+
   try {
     const user = await requireUser();
 
@@ -20,8 +22,6 @@ export async function POST(_request: Request, { params }: RouteParams) {
       );
     }
 
-    const { id } = await params;
-
     const document = await prisma.medicalDocument.findFirst({
       where: {
         id,
@@ -29,6 +29,8 @@ export async function POST(_request: Request, { params }: RouteParams) {
       },
       select: {
         id: true,
+        fileUrl: true,
+        fileType: true,
         processingStatus: true,
       },
     });
@@ -49,7 +51,10 @@ export async function POST(_request: Request, { params }: RouteParams) {
       },
     });
 
-    const parsedReport = parseMockMedicalReport();
+    const parsedReport = await parseMedicalReportWithAI({
+      fileUrl: document.fileUrl,
+      fileType: document.fileType,
+    });
 
     await prisma.healthMetric.deleteMany({
       where: {
@@ -67,7 +72,7 @@ export async function POST(_request: Request, { params }: RouteParams) {
         normalMin: metric.normalMin,
         normalMax: metric.normalMax,
         status: metric.status,
-        testedAt: metric.testedAt,
+        testedAt: new Date(),
       })),
     });
 
@@ -91,6 +96,17 @@ export async function POST(_request: Request, { params }: RouteParams) {
       document: updatedDocument,
     });
   } catch (error) {
+    await prisma.medicalDocument
+      .update({
+        where: {
+          id,
+        },
+        data: {
+          processingStatus: "FAILED",
+        },
+      })
+      .catch(() => null);
+
     console.error("Document processing error:", error);
 
     return NextResponse.json(
