@@ -110,11 +110,14 @@ export async function POST(request: Request) {
       "SCAN_REPORT",
       "CHECKUP_REPORT",
       "OTHER",
-    ];
+    ] as const;
 
-    const finalDocumentType =
-      typeof documentType === "string" && allowedTypes.includes(documentType)
-        ? documentType
+    type AllowedDocumentType = (typeof allowedTypes)[number];
+
+    const finalDocumentType: AllowedDocumentType =
+      typeof documentType === "string" &&
+      allowedTypes.includes(documentType as AllowedDocumentType)
+        ? (documentType as AllowedDocumentType)
         : "OTHER";
 
     const arrayBuffer = await file.arrayBuffer();
@@ -129,7 +132,7 @@ export async function POST(request: Request) {
         fileUrl: uploadedFile.secure_url,
         fileType: file.type || uploadedFile.format || "unknown",
         fileSize: uploadedFile.bytes,
-        documentType: finalDocumentType as any,
+        documentType: finalDocumentType,
         processingStatus: "PENDING",
       },
     });

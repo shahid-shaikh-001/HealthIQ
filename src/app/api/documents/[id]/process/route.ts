@@ -11,6 +11,7 @@ type RouteParams = {
 
 export async function POST(_request: Request, { params }: RouteParams) {
   const { id } = await params;
+  let userId: string | null = null;
 
   try {
     const user = await requireUser();
@@ -21,6 +22,8 @@ export async function POST(_request: Request, { params }: RouteParams) {
         { status: 401 }
       );
     }
+
+    userId = user.id;
 
     const document = await prisma.medicalDocument.findFirst({
       where: {
@@ -59,6 +62,7 @@ export async function POST(_request: Request, { params }: RouteParams) {
     await prisma.healthMetric.deleteMany({
       where: {
         documentId: document.id,
+        userId: user.id,
       },
     });
 
@@ -96,16 +100,19 @@ export async function POST(_request: Request, { params }: RouteParams) {
       document: updatedDocument,
     });
   } catch (error) {
-    await prisma.medicalDocument
-      .update({
-        where: {
-          id,
-        },
-        data: {
-          processingStatus: "FAILED",
-        },
-      })
-      .catch(() => null);
+    if (userId) {
+      await prisma.medicalDocument
+        .updateMany({
+          where: {
+            id,
+            userId,
+          },
+          data: {
+            processingStatus: "FAILED",
+          },
+        })
+        .catch(() => null);
+    }
 
     console.error("Document processing error:", error);
 

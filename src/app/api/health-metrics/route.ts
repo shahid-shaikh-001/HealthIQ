@@ -2,6 +2,14 @@ import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { requireUser } from "../../../server/utils/require-user";
 
+const allowedMetricStatuses = ["LOW", "NORMAL", "HIGH", "CRITICAL"] as const;
+
+type MetricStatus = (typeof allowedMetricStatuses)[number];
+
+function isMetricStatus(status: string): status is MetricStatus {
+  return allowedMetricStatuses.includes(status as MetricStatus);
+}
+
 export async function GET(request: Request) {
   try {
     const user = await requireUser();
@@ -15,17 +23,27 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
 
-    const status = searchParams.get("status");
+    const statusParam = searchParams.get("status");
     const name = searchParams.get("name");
+
+    if (statusParam && !isMetricStatus(statusParam)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Invalid status. Allowed values: LOW, NORMAL, HIGH, CRITICAL",
+        },
+        { status: 400 }
+      );
+    }
+
+    const statusFilter: MetricStatus | undefined =
+      statusParam && isMetricStatus(statusParam) ? statusParam : undefined;
 
     const metrics = await prisma.healthMetric.findMany({
       where: {
         userId: user.id,
-        ...(status
-          ? {
-              status: status as any,
-            }
-          : {}),
+        ...(statusFilter ? { status: statusFilter } : {}),
         ...(name
           ? {
               name: {
