@@ -238,13 +238,13 @@ https://github.com/shahid-shaikh-001/HealthIQ
 > Add screenshots after deployment
 
 ```md
-![Dashboard] <img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/dashboard.png" width="100%" />
+ <img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/dashboard.png" width="100%" />
 
-![Upload Report] <img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/upload.png" width="100%" />
+ <img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/upload.png" width="100%" />
 
-![Health Score] <img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/health-score.png" width="100%" />
+ <img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/health-score.png" width="100%" />
 
-![Insights Page] <img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/insights.png" width="100%" />
+ <img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/insights.png" width="100%" />
 ```
 
 ---
