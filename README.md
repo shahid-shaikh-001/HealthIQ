@@ -21,43 +21,43 @@ HealthIQ is an AI-powered health intelligence platform that helps users upload m
 
 ## 📄 Medical Report Management
 
-* Upload Blood Reports, Prescriptions & Health Documents
-* Secure Cloud Storage
-* AI Document Processing
-* Smart Medical Data Extraction
-* Automated Report Categorization
+* Upload blood reports, prescriptions, and health documents
+* Store uploaded documents securely using Cloudinary
+* Process medical reports using AI
+* Extract important health metrics from uploaded reports
+* Categorize health documents for easier tracking
 
 ## 🤖 AI-Powered Health Analysis
 
-* AI Generated Health Summaries
-* Medical Report Interpretation
-* Simplified Health Explanations
-* Intelligent Risk Detection
-* Personalized Health Recommendations
+* Generate AI-based health summaries
+* Explain medical report values in simple language
+* Detect abnormal health indicators
+* Provide personalized health recommendations
+* Help users understand long-term health patterns
 
 ## 📊 Health Metrics Tracking
 
-* Track Biomarkers Over Time
-* Health Trend Visualization
-* Historical Health Records
-* Abnormal Value Detection
-* Long-Term Health Monitoring
+* Track biomarkers and health values over time
+* View historical health records
+* Monitor abnormal metric trends
+* Organize health data in a centralized dashboard
+* Support preventive healthcare decision-making
 
 ## 🎯 Health Intelligence Dashboard
 
-* Personalized Health Overview
-* Health Score System
-* Recent Health Activity
-* Key Health Statistics
-* AI Generated Insights
+* Personalized health overview
+* Health score system
+* Recent uploaded reports
+* Key health statistics
+* AI-generated insights and recommendations
 
 ## 🔐 Authentication & Security
 
-* Google Authentication
-* Secure Session Management
-* Protected User Data
-* Encrypted Communication
-* User-Specific Health Records
+* Google authentication using NextAuth.js
+* Secure session management
+* Protected dashboard routes
+* User-specific medical records
+* Environment-based secret management
 
 ---
 
@@ -113,6 +113,7 @@ HealthIQ/
 ├── prisma/
 │
 ├── public/
+│   └── screenshots/
 │
 └── README.md
 ```
@@ -121,67 +122,60 @@ HealthIQ/
 
 # 🚀 Installation & Setup
 
-## 1️⃣ Clone Repository
+## 1. Clone Repository
 
 ```bash
 git clone https://github.com/shahid-shaikh-001/HealthIQ.git
-
 cd HealthIQ
 ```
 
----
-
-## 2️⃣ Install Dependencies
+## 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
----
+## 3. Configure Environment Variables
 
-## 3️⃣ Configure Environment Variables
-
-Create a `.env` file:
+Create a `.env` file in the root directory:
 
 ```env
 AUTH_SECRET=
 AUTH_GOOGLE_ID=
 AUTH_GOOGLE_SECRET=
+
 NEXTAUTH_URL=
 NEXTAUTH_SECRET=
+
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
-GEMINI_API_KEY=
 CLOUDINARY_API_SECRET=
+
+GEMINI_API_KEY=
+
 DATABASE_URL=
 DIRECT_URL=
 ```
 
----
-
-## 4️⃣ Generate Prisma Client
+## 4. Generate Prisma Client
 
 ```bash
 npx prisma generate
 ```
 
----
-
-## 5️⃣ Run Database Migrations
+## 5. Run Database Migrations
 
 ```bash
 npx prisma migrate dev
 ```
 
----
-
-## 6️⃣ Start Development Server
+## 6. Start Development Server
 
 ```bash
 npm run dev
 ```
 
-Open:
+Open the app:
 
 ```txt
 http://localhost:3000
@@ -203,82 +197,82 @@ https://github.com/shahid-shaikh-001/HealthIQ
 
 # 📊 Core Modules
 
-### Document Processing Engine
+## Document Processing Engine
 
-* Medical Report Upload
-* AI Text Extraction
-* Report Classification
-* Medical Data Parsing
+* Medical report upload
+* AI text extraction
+* Report classification
+* Medical data parsing
+* Document processing status tracking
 
-### Health Analytics Engine
+## Health Analytics Engine
 
-* Metric Tracking
-* Trend Analysis
-* Health Score Generation
-* Abnormality Detection
+* Health metric tracking
+* Trend analysis
+* Health score generation
+* Abnormal value detection
+* Preventive health monitoring
 
-### AI Intelligence Layer
+## AI Intelligence Layer
 
-* Gemini AI Integration
-* Report Summarization
-* Health Recommendations
-* Risk Insights
+* Gemini AI integration
+* Report summarization
+* Health recommendations
+* Risk insights
+* Simple medical explanations
 
-### User Dashboard
+## User Dashboard
 
-* Health Overview
-* Recent Reports
-* Trends & Insights
-* Profile Management
+* Health overview
+* Recent reports
+* Trends and insights
+* Health score details
+* Profile management
 
 ---
 
 # 📸 Screenshots
 
-> Add screenshots after deployment
+<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/dashboard.png" alt="HealthIQ Dashboard" width="100%" />
 
-```md
- <img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/dashboard.png" width="100%" />
+<br />
 
- <img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/upload.png" width="100%" />
+<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/upload.png" alt="Upload Medical Report" width="100%" />
 
- <img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/health-score.png" width="100%" />
+<br />
 
- <img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/insights.png" width="100%" />
-```
+<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/health-score.png" alt="Health Score Page" width="100%" />
+
+<br />
+
+<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/insights.png" alt="Health Insights Page" width="100%" />
 
 ---
 
 # 📈 Project Highlights
 
-✅ AI-Powered Medical Report Analysis
-
-✅ Health Intelligence Dashboard
-
-✅ Google Authentication
-
-✅ Cloudinary Integration
-
-✅ PostgreSQL + Prisma Architecture
-
-✅ Type-Safe Full Stack Development
-
-✅ Modern Next.js App Router
-
-✅ Production-Ready Scalable Architecture
+* AI-powered medical report analysis
+* Health intelligence dashboard
+* Google authentication with NextAuth.js
+* Cloudinary document upload integration
+* PostgreSQL database with Prisma ORM
+* Type-safe full-stack development
+* Modern Next.js App Router architecture
+* Scalable and production-focused project structure
 
 ---
 
 # 🎯 Future Improvements
 
-* Wearable Device Integration
-* Health Risk Prediction Models
-* Doctor Consultation Support
-* Medication Reminders
-* AI Nutrition Recommendations
-* Smart Health Notifications
-* Family Health Profiles
-* Advanced Analytics Dashboard
+* Wearable device integration
+* Health risk prediction models
+* Doctor consultation support
+* Medication reminders
+* AI nutrition recommendations
+* Smart health notifications
+* Family health profiles
+* Advanced analytics dashboard
+* Retry logic for AI processing failures
 
 ---
 
@@ -292,7 +286,7 @@ GitHub: https://github.com/shahid-shaikh-001
 
 # ⭐ Support
 
-If you found this project useful, give it a star ⭐ and support its development.
+If you found this project useful, give it a star and support its development.
 
 ---
 
