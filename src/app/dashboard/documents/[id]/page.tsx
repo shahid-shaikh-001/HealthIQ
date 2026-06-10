@@ -5,7 +5,10 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
+  AlertCircle,
   ArrowLeft,
+  CalendarDays,
+  CheckCircle2,
   Edit3,
   ExternalLink,
   FileText,
@@ -80,6 +83,60 @@ const documentTypes = [
   { label: "Other", value: "OTHER" },
 ];
 
+function formatDocumentType(type: string) {
+  return type.replaceAll("_", " ");
+}
+
+function getMetricStatusClass(status: string) {
+  const normalized = status.toUpperCase();
+
+  if (normalized === "NORMAL") {
+    return "border-emerald-300/20 bg-emerald-500/10 text-emerald-300";
+  }
+
+  if (normalized === "LOW" || normalized === "HIGH" || normalized === "ABNORMAL") {
+    return "border-red-300/20 bg-red-500/10 text-red-300";
+  }
+
+  return "border-yellow-300/20 bg-yellow-500/10 text-yellow-300";
+}
+
+function getProcessingMessage(status: string) {
+  if (status === "PENDING") {
+    return {
+      icon: AlertCircle,
+      className: "border-yellow-300/20 bg-yellow-500/10 text-yellow-200",
+      message:
+        "This document is uploaded but not analyzed yet. Click Process with AI to extract text, summary, and health metrics.",
+    };
+  }
+
+  if (status === "PROCESSING") {
+    return {
+      icon: Loader2,
+      className: "border-cyan-300/20 bg-cyan-500/10 text-cyan-200",
+      message:
+        "AI processing is in progress. This may take a few seconds depending on file size and AI provider response time.",
+    };
+  }
+
+  if (status === "FAILED") {
+    return {
+      icon: AlertCircle,
+      className: "border-red-300/20 bg-red-500/10 text-red-200",
+      message:
+        "AI processing failed. This can happen if the AI provider is temporarily overloaded or unavailable. You can retry processing this document.",
+    };
+  }
+
+  return {
+    icon: CheckCircle2,
+    className: "border-emerald-300/20 bg-emerald-500/10 text-emerald-200",
+    message:
+      "AI processing completed. Extracted text, summary, and health metrics are available below.",
+  };
+}
+
 export default function DocumentDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -142,6 +199,7 @@ export default function DocumentDetailPage() {
           ? "AI provider is temporarily unavailable or overloaded. Please retry after some time."
           : errorMessage
       );
+
       await loadDocument();
     } finally {
       setIsProcessing(false);
@@ -254,45 +312,63 @@ export default function DocumentDetailPage() {
     document.processingStatus === "PENDING" ||
     document.processingStatus === "FAILED";
 
+  const processingInfo = getProcessingMessage(
+    isProcessing ? "PROCESSING" : document.processingStatus
+  );
+  const ProcessingIcon = processingInfo.icon;
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Link
         href="/dashboard/documents"
-        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+        className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-sm font-medium text-slate-300 shadow-lg shadow-black/10 backdrop-blur-xl transition hover:border-cyan-300/30 hover:bg-white/[0.08] hover:text-white"
       >
-        <ArrowLeft className="h-4 w-4" />
-        Back to documents
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/[0.06] transition group-hover:-translate-x-0.5 group-hover:bg-cyan-300/10 group-hover:text-cyan-300">
+          <ArrowLeft className="h-4 w-4" />
+        </span>
+        <span className="pr-2">Back to documents</span>
       </Link>
 
-      <div className="rounded-2xl border bg-card p-6 shadow-sm">
-        <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
-          <div>
-            <div className="mb-3 flex flex-wrap items-center gap-3">
-              <div className="rounded-xl bg-muted p-3">
+      <section className="rounded-[1.75rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-black/10 backdrop-blur-xl">
+        <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-start">
+          <div className="min-w-0">
+            <div className="mb-5 flex flex-wrap items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-300/10 text-cyan-300">
                 <FileText className="h-5 w-5" />
               </div>
 
-              <StatusBadge status={document.processingStatus} />
+              <StatusBadge status={isProcessing ? "PROCESSING" : document.processingStatus} />
 
-              <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium">
-                {document.documentType.replace("_", " ")}
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium uppercase tracking-[0.16em] text-slate-400">
+                {formatDocumentType(document.documentType)}
               </span>
             </div>
 
-            <h1 className="text-3xl font-bold">{document.title}</h1>
+            <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-white md:text-4xl">
+              {document.title}
+            </h1>
 
-            <p className="mt-2 text-sm text-muted-foreground">
-              Uploaded {new Date(document.uploadedAt).toLocaleDateString()}
-            </p>
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-500">
+              <span className="inline-flex items-center gap-2">
+                <CalendarDays className="h-4 w-4" />
+                Uploaded {new Date(document.uploadedAt).toLocaleDateString()}
+              </span>
+
+              {document.fileSize && (
+                <span>
+                  {(document.fileSize / 1024).toFixed(1)} KB
+                </span>
+              )}
+            </div>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="flex flex-col gap-3 sm:flex-row lg:flex-wrap lg:justify-end">
             {canProcess && (
               <button
                 type="button"
                 onClick={handleProcessDocument}
                 disabled={isProcessing || isDeleting || isUpdating}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+                className="healthiq-primary-button inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isProcessing ? (
                   <>
@@ -315,40 +391,46 @@ export default function DocumentDetailPage() {
                 <button
                   type="button"
                   disabled={isDeleting || isProcessing || isUpdating}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-medium text-slate-300 transition hover:bg-white/[0.08] hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <Edit3 className="h-4 w-4" />
                   Edit
                 </button>
               </DialogTrigger>
 
-              <DialogContent>
+              <DialogContent className="border-white/10 bg-slate-950 text-white">
                 <DialogHeader>
                   <DialogTitle>Edit document</DialogTitle>
-                  <DialogDescription>
+                  <DialogDescription className="text-slate-500">
                     Update the document title and document type.
                   </DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Title</label>
+                    <label className="text-sm font-medium text-slate-300">
+                      Title
+                    </label>
+
                     <input
                       value={editTitle}
                       onChange={(event) => setEditTitle(event.target.value)}
                       placeholder="Enter document title"
-                      className="w-full rounded-xl border bg-background px-4 py-3 text-sm outline-none"
+                      className="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-cyan-300/40"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Document Type</label>
+                    <label className="text-sm font-medium text-slate-300">
+                      Document Type
+                    </label>
+
                     <select
                       value={editDocumentType}
                       onChange={(event) =>
                         setEditDocumentType(event.target.value)
                       }
-                      className="w-full rounded-xl border bg-background px-4 py-3 text-sm outline-none"
+                      className="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none focus:border-cyan-300/40"
                     >
                       {documentTypes.map((type) => (
                         <option key={type.value} value={type.value}>
@@ -364,7 +446,7 @@ export default function DocumentDetailPage() {
                     type="button"
                     onClick={() => setIsEditOpen(false)}
                     disabled={isUpdating}
-                    className="rounded-xl border px-4 py-2 text-sm font-medium hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
+                    className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-medium text-slate-300 hover:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     Cancel
                   </button>
@@ -373,7 +455,7 @@ export default function DocumentDetailPage() {
                     type="button"
                     onClick={handleUpdateDocument}
                     disabled={isUpdating}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-cyan-300 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isUpdating ? (
                       <>
@@ -392,7 +474,7 @@ export default function DocumentDetailPage() {
               href={document.fileUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium hover:bg-muted"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-medium text-slate-300 transition hover:bg-white/[0.08] hover:text-white"
             >
               Open File
               <ExternalLink className="h-4 w-4" />
@@ -403,7 +485,7 @@ export default function DocumentDetailPage() {
                 <button
                   type="button"
                   disabled={isDeleting || isProcessing || isUpdating}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60 dark:hover:bg-red-950"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-red-300/20 bg-red-500/10 px-5 py-3 text-sm font-medium text-red-300 transition hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {isDeleting ? (
                     <>
@@ -419,17 +501,20 @@ export default function DocumentDetailPage() {
                 </button>
               </AlertDialogTrigger>
 
-              <AlertDialogContent>
+              <AlertDialogContent className="border-white/10 bg-slate-950 text-white">
                 <AlertDialogHeader>
                   <AlertDialogTitle>Delete document?</AlertDialogTitle>
-                  <AlertDialogDescription>
+                  <AlertDialogDescription className="text-slate-500">
                     This will permanently delete this medical document and its
                     extracted health metrics. This action cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
 
                 <AlertDialogFooter>
-                  <AlertDialogCancel disabled={isDeleting}>
+                  <AlertDialogCancel
+                    disabled={isDeleting}
+                    className="border-white/10 bg-white/[0.04] text-slate-300 hover:bg-white/[0.08] hover:text-white"
+                  >
                     Cancel
                   </AlertDialogCancel>
 
@@ -447,67 +532,82 @@ export default function DocumentDetailPage() {
         </div>
 
         {processMessage && (
-          <div className="mt-5 rounded-xl border bg-muted px-4 py-3 text-sm text-muted-foreground">
+          <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm leading-6 text-slate-300">
             {processMessage}
           </div>
         )}
+      </section>
 
-        {document.processingStatus === "PENDING" && (
-          <div className="mt-5 rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800 dark:border-yellow-900 dark:bg-yellow-950 dark:text-yellow-300">
-            This document is uploaded but not analyzed yet. Click Process with AI to extract text, summary, and health metrics.
-          </div>
-        )}
+      <section className={`rounded-[1.5rem] border p-5 ${processingInfo.className}`}>
+        <div className="flex gap-3">
+          <ProcessingIcon
+            className={`mt-0.5 h-5 w-5 shrink-0 ${
+              isProcessing ? "animate-spin" : ""
+            }`}
+          />
 
-        {document.processingStatus === "PROCESSING" && (
-          <div className="mt-5 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300">
-            AI processing is in progress. This may take a few seconds depending on file size and AI provider response time.
-          </div>
-        )}
-
-        {document.processingStatus === "FAILED" && (
-          <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
-            AI processing failed. This can happen if the AI provider is temporarily overloaded or unavailable. You can retry processing this document.
-          </div>
-        )}
-
-        {document.processingStatus === "COMPLETED" && (
-          <div className="mt-5 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-300">
-            AI processing completed. Extracted text, summary, and health metrics are available below.
-          </div>
-        )}
-      </div>
+          <p className="text-sm leading-6">{processingInfo.message}</p>
+        </div>
+      </section>
 
       {document.healthMetrics && document.healthMetrics.length > 0 && (
-        <section className="rounded-2xl border bg-card p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-2">
-            <Sparkles className="h-5 w-5" />
-            <h2 className="text-lg font-semibold">Extracted Health Metrics</h2>
+        <section className="rounded-[1.75rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-black/10 backdrop-blur-xl">
+          <div className="mb-5 flex items-center justify-between gap-4">
+            <div>
+              <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-300/10 text-cyan-300">
+                <Sparkles className="h-5 w-5" />
+              </div>
+
+              <h2 className="text-xl font-semibold text-white">
+                Extracted Health Metrics
+              </h2>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Structured biomarker values detected from this document.
+              </p>
+            </div>
+
+            <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-slate-400">
+              {document.healthMetrics.length} metrics
+            </span>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-2xl border border-white/10">
             <table className="w-full min-w-[700px] text-sm">
-              <thead>
-                <tr className="border-b text-left text-muted-foreground">
-                  <th className="py-3 pr-4 font-medium">Metric</th>
-                  <th className="py-3 pr-4 font-medium">Value</th>
-                  <th className="py-3 pr-4 font-medium">Reference Range</th>
-                  <th className="py-3 pr-4 font-medium">Status</th>
+              <thead className="bg-slate-950/60">
+                <tr className="text-left text-slate-500">
+                  <th className="px-4 py-3 font-medium">Metric</th>
+                  <th className="px-4 py-3 font-medium">Value</th>
+                  <th className="px-4 py-3 font-medium">Reference Range</th>
+                  <th className="px-4 py-3 font-medium">Status</th>
                 </tr>
               </thead>
 
               <tbody>
                 {document.healthMetrics.map((metric) => (
-                  <tr key={metric.id} className="border-b last:border-0">
-                    <td className="py-3 pr-4 font-medium">{metric.name}</td>
-                    <td className="py-3 pr-4 text-muted-foreground">
+                  <tr
+                    key={metric.id}
+                    className="border-t border-white/10 text-slate-300"
+                  >
+                    <td className="px-4 py-4 font-medium text-white">
+                      {metric.name}
+                    </td>
+
+                    <td className="px-4 py-4 text-slate-400">
                       {metric.value} {metric.unit}
                     </td>
-                    <td className="py-3 pr-4 text-muted-foreground">
+
+                    <td className="px-4 py-4 text-slate-400">
                       {metric.normalMin ?? "N/A"} - {metric.normalMax ?? "N/A"}{" "}
                       {metric.unit}
                     </td>
-                    <td className="py-3 pr-4">
-                      <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium">
+
+                    <td className="px-4 py-4">
+                      <span
+                        className={`rounded-full border px-3 py-1 text-xs font-medium ${getMetricStatusClass(
+                          metric.status
+                        )}`}
+                      >
                         {metric.status}
                       </span>
                     </td>
@@ -520,27 +620,47 @@ export default function DocumentDetailPage() {
       )}
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <section className="rounded-2xl border bg-card p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            <h2 className="text-lg font-semibold">Extracted Text</h2>
+        <section className="rounded-[1.75rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-black/10 backdrop-blur-xl">
+          <div className="mb-5 flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-300/10 text-cyan-300">
+              <FileText className="h-5 w-5" />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-semibold text-white">
+                Extracted Text
+              </h2>
+
+              <p className="text-sm text-slate-500">
+                Raw text detected from the uploaded report.
+              </p>
+            </div>
           </div>
 
-          <div className="max-h-[500px] overflow-y-auto rounded-xl bg-muted p-4">
-            <pre className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">
+          <div className="max-h-[500px] overflow-y-auto rounded-2xl border border-white/10 bg-slate-950/45 p-4">
+            <pre className="whitespace-pre-wrap text-sm leading-7 text-slate-400">
               {document.extractedText || "No extracted text available yet."}
             </pre>
           </div>
         </section>
 
-        <section className="rounded-2xl border bg-card p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-2">
-            <Sparkles className="h-5 w-5" />
-            <h2 className="text-lg font-semibold">AI Summary</h2>
+        <section className="rounded-[1.75rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-black/10 backdrop-blur-xl">
+          <div className="mb-5 flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-300/10 text-cyan-300">
+              <Sparkles className="h-5 w-5" />
+            </div>
+
+            <div>
+              <h2 className="text-lg font-semibold text-white">AI Summary</h2>
+
+              <p className="text-sm text-slate-500">
+                Plain-language explanation generated from this document.
+              </p>
+            </div>
           </div>
 
-          <div className="rounded-xl bg-muted p-4">
-            <p className="text-sm leading-6 text-muted-foreground">
+          <div className="rounded-2xl border border-white/10 bg-slate-950/45 p-5">
+            <p className="text-sm leading-7 text-slate-400">
               {document.aiSummary || "AI summary is not available yet."}
             </p>
           </div>

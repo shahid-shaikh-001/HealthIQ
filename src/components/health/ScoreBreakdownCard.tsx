@@ -9,21 +9,27 @@ export default function ScoreBreakdownCard({
   score,
   description,
 }: ScoreBreakdownCardProps) {
+  const safeScore = Math.max(0, Math.min(score, 100));
+
   return (
-    <div className="rounded-2xl border bg-card p-5 shadow-sm">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-black/10 backdrop-blur-xl">
+      <div className="mb-4 flex items-start justify-between gap-4">
         <div>
-          <h2 className="font-semibold">{title}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+          <h3 className="font-semibold text-white">{title}</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-500">
+            {description}
+          </p>
         </div>
 
-        <span className="text-2xl font-bold">{score}%</span>
+        <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-sm font-semibold text-cyan-300">
+          {safeScore}
+        </span>
       </div>
 
-      <div className="h-2 rounded-full bg-muted">
+      <div className="h-2 rounded-full bg-white/10">
         <div
-          className="h-2 rounded-full bg-primary"
-          style={{ width: `${score}%` }}
+          className="h-2 rounded-full bg-cyan-300"
+          style={{ width: `${safeScore}%` }}
         />
       </div>
     </div>

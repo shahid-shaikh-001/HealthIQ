@@ -14,18 +14,19 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="min-h-screen bg-muted/20">
-      <div className="flex">
-        <Sidebar />
+    <main className="min-h-screen bg-[#050b14] text-white">
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(34,211,238,0.12),transparent_30rem),radial-gradient(circle_at_85%_20%,rgba(59,130,246,0.10),transparent_34rem),radial-gradient(circle_at_50%_100%,rgba(16,185,129,0.08),transparent_30rem)]" />
+      <div className="pointer-events-none fixed inset-0 healthiq-grid-bg opacity-[0.12]" />
 
-        <section className="min-h-screen flex-1">
-          <DashboardHeader />
+      <Sidebar />
 
-          <div className="mx-auto w-full max-w-7xl p-4 md:p-6 lg:p-8">
-            {children}
-          </div>
-        </section>
-      </div>
+      <section className="relative min-h-screen md:pl-72">
+        <DashboardHeader />
+
+        <div className="mx-auto w-full max-w-7xl p-4 md:p-6 lg:p-8">
+          {children}
+        </div>
+      </section>
     </main>
   );
 }

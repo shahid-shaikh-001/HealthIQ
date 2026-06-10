@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
-import { Bell, LogOut, Search, UserCircle } from "lucide-react";
+import { LogOut, UserCircle } from "lucide-react";
 import MobileSidebar from "../../components/layout/MobileSidebar";
 
 export default function DashboardHeader() {
@@ -26,18 +26,6 @@ export default function DashboardHeader() {
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="hidden items-center gap-2 rounded-xl border px-3 py-2 lg:flex">
-          <Search className="h-4 w-4 text-muted-foreground" />
-          <input
-            placeholder="Search reports..."
-            className="w-48 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-          />
-        </div>
-
-        <button className="hidden h-10 w-10 items-center justify-center rounded-xl border sm:flex">
-          <Bell className="h-4 w-4" />
-        </button>
-
         <div className="hidden items-center gap-3 rounded-xl border px-3 py-2 md:flex">
           <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-muted">
             {userImage ? (

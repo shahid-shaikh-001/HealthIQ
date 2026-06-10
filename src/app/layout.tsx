@@ -47,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang="en"className="dark" data-scroll-behavior="smooth">
       <body>
         <AuthProvider>{children}</AuthProvider>
       </body>

@@ -6,6 +6,7 @@ import {
   CalendarCheck,
   CalendarClock,
   FileSearch,
+  ShieldCheck,
   Stethoscope,
 } from "lucide-react";
 
@@ -103,6 +104,10 @@ export default function RemindersPage() {
     (reminder) => reminder.priority === "MEDIUM"
   ).length;
 
+  const lowPriorityCount = reminders.filter(
+    (reminder) => reminder.priority === "LOW"
+  ).length;
+
   if (isLoading) {
     return (
       <LoadingState
@@ -123,71 +128,142 @@ export default function RemindersPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold">Reminders</h1>
-        <p className="text-muted-foreground">
-          Follow-ups generated from abnormal markers, recommendations, and report history.
-        </p>
+      <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+        <div>
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-slate-300">
+            <CalendarClock className="h-4 w-4 text-cyan-300" />
+            Preventive follow-up system
+          </div>
+
+          <h1 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">
+            Reminders
+          </h1>
+
+          <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-400">
+            Follow-ups generated from abnormal markers, recommendations, and
+            report history. Use them as awareness prompts, not clinical
+            instructions.
+          </p>
+        </div>
+
+        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-sm font-medium text-cyan-300">
+          <CalendarCheck className="h-4 w-4" />
+          {reminders.length} active reminders
+        </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border bg-card p-5 shadow-sm">
-          <div className="mb-3 w-fit rounded-xl bg-muted p-3">
+      <div className="grid gap-4 md:grid-cols-4">
+        <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-black/10 backdrop-blur-xl">
+          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-300/10 text-cyan-300">
             <CalendarClock className="h-5 w-5" />
           </div>
 
-          <h2 className="text-2xl font-bold">{reminders.length}</h2>
-          <p className="text-sm text-muted-foreground">Active reminders</p>
+          <h2 className="text-3xl font-semibold text-white">
+            {reminders.length}
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-500">Active reminders</p>
         </div>
 
-        <div className="rounded-2xl border bg-card p-5 shadow-sm">
-          <div className="mb-3 w-fit rounded-xl bg-muted p-3">
+        <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-black/10 backdrop-blur-xl">
+          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-red-300/10 text-red-300">
             <AlertTriangle className="h-5 w-5" />
           </div>
 
-          <h2 className="text-2xl font-bold">{highPriorityCount}</h2>
-          <p className="text-sm text-muted-foreground">High priority</p>
+          <h2 className="text-3xl font-semibold text-white">
+            {highPriorityCount}
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-500">High priority</p>
         </div>
 
-        <div className="rounded-2xl border bg-card p-5 shadow-sm">
-          <div className="mb-3 w-fit rounded-xl bg-muted p-3">
+        <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-black/10 backdrop-blur-xl">
+          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-yellow-300/10 text-yellow-300">
             <CalendarCheck className="h-5 w-5" />
           </div>
 
-          <h2 className="text-2xl font-bold">{mediumPriorityCount}</h2>
-          <p className="text-sm text-muted-foreground">Medium priority</p>
+          <h2 className="text-3xl font-semibold text-white">
+            {mediumPriorityCount}
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-500">Medium priority</p>
+        </div>
+
+        <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-black/10 backdrop-blur-xl">
+          <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-300/10 text-emerald-300">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+
+          <h2 className="text-3xl font-semibold text-white">
+            {lowPriorityCount}
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-500">Low priority</p>
         </div>
       </div>
 
       {reminders.length === 0 ? (
-        <EmptyState
-          icon={CalendarClock}
-          title="No reminders available"
-          description="Upload and process reports to generate follow-up reminders."
-        />
+        <section className="rounded-[1.75rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-black/10 backdrop-blur-xl">
+          <EmptyState
+            icon={CalendarClock}
+            title="No reminders available"
+            description="Upload and process reports to generate follow-up reminders."
+          />
+        </section>
       ) : (
-        <div className="space-y-4">
-          {reminders.map((reminder, index) => (
-            <ReminderItem
-              key={`${reminder.title}-${index}`}
-              title={reminder.title}
-              description={reminder.description}
-              date={reminder.date}
-              priority={reminder.priority}
-              icon={reminder.icon}
-            />
-          ))}
-        </div>
+        <section className="rounded-[1.75rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-black/10 backdrop-blur-xl">
+          <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+            <div>
+              <h2 className="text-xl font-semibold text-white">
+                Follow-up Queue
+              </h2>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Generated from abnormal markers, recommendations, and upload
+                history.
+              </p>
+            </div>
+
+            <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs text-slate-400">
+              {reminders.length} reminders
+            </span>
+          </div>
+
+          <div className="space-y-4">
+            {reminders.map((reminder, index) => (
+              <ReminderItem
+                key={`${reminder.title}-${index}`}
+                title={reminder.title}
+                description={reminder.description}
+                date={reminder.date}
+                priority={reminder.priority}
+                icon={reminder.icon}
+              />
+            ))}
+          </div>
+        </section>
       )}
 
-      <div className="rounded-2xl border bg-card p-6 shadow-sm">
-        <h2 className="text-lg font-semibold">How reminders work</h2>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+      <section className="rounded-[1.75rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-black/10 backdrop-blur-xl">
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-300/10 text-cyan-300">
+            <CalendarCheck className="h-5 w-5" />
+          </div>
+
+          <div>
+            <h2 className="font-semibold text-white">How reminders work</h2>
+            <p className="text-sm text-slate-500">
+              Reminder source and safety note
+            </p>
+          </div>
+        </div>
+
+        <p className="text-sm leading-7 text-slate-400">
           These reminders are generated from abnormal metrics and preventive
-          recommendations returned by your backend. They are not emergency alerts,
-          prescriptions, or clinical instructions.
+          recommendations returned by your backend. They are not emergency
+          alerts, prescriptions, or clinical instructions.
         </p>
-      </div>
+      </section>
     </div>
   );
 }
