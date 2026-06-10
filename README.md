@@ -194,7 +194,7 @@ http://localhost:3000
 
 ## 🚀 Live Website
 
-(https://health-iq-theta.vercel.app/)
+https://health-iq-theta.vercel.app
 
 ## 📦 GitHub Repository
 
