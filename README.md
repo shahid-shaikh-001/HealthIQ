@@ -1,36 +1,302 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏥 HealthIQ — AI Powered Health Intelligence Platform
 
-## Getting Started
+<div align="center">
 
-First, run the development server:
+![HealthIQ](https://img.shields.io/badge/AI-Healthcare-blue?style=for-the-badge)
+![Next.js](https://img.shields.io/badge/Frontend-Next.js-black?style=for-the-badge\&logo=next.js)
+![TypeScript](https://img.shields.io/badge/Language-TypeScript-3178C6?style=for-the-badge\&logo=typescript)
+![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-336791?style=for-the-badge\&logo=postgresql)
+![Prisma](https://img.shields.io/badge/ORM-Prisma-2D3748?style=for-the-badge\&logo=prisma)
+![Google AI](https://img.shields.io/badge/AI-Gemini-4285F4?style=for-the-badge)
+
+### 🧠 Transform Medical Reports Into Actionable Health Insights
+
+HealthIQ is an AI-powered health intelligence platform that helps users upload medical reports, extract health metrics, analyze trends, generate personalized insights, and better understand their health through AI-driven recommendations.
+
+</div>
+
+---
+
+# ✨ Features
+
+## 📄 Medical Report Management
+
+* Upload Blood Reports, Prescriptions & Health Documents
+* Secure Cloud Storage
+* AI Document Processing
+* Smart Medical Data Extraction
+* Automated Report Categorization
+
+## 🤖 AI-Powered Health Analysis
+
+* AI Generated Health Summaries
+* Medical Report Interpretation
+* Simplified Health Explanations
+* Intelligent Risk Detection
+* Personalized Health Recommendations
+
+## 📊 Health Metrics Tracking
+
+* Track Biomarkers Over Time
+* Health Trend Visualization
+* Historical Health Records
+* Abnormal Value Detection
+* Long-Term Health Monitoring
+
+## 🎯 Health Intelligence Dashboard
+
+* Personalized Health Overview
+* Health Score System
+* Recent Health Activity
+* Key Health Statistics
+* AI Generated Insights
+
+## 🔐 Authentication & Security
+
+* Google Authentication
+* Secure Session Management
+* Protected User Data
+* Encrypted Communication
+* User-Specific Health Records
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+* Next.js 16
+* React.js
+* TypeScript
+* Tailwind CSS
+* Shadcn UI
+
+## Backend
+
+* Next.js API Routes
+* Prisma ORM
+* PostgreSQL
+* Neon Database
+
+## Authentication
+
+* NextAuth.js
+* Google OAuth
+
+## AI & Cloud Services
+
+* Google Gemini AI
+* Cloudinary
+* AI Document Processing
+
+---
+
+# 📂 Project Structure
+
+```bash
+HealthIQ/
+│
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── dashboard/
+│   │   └── auth/
+│   │
+│   ├── components/
+│   │
+│   ├── lib/
+│   │
+│   ├── generated/
+│   │
+│   └── types/
+│
+├── prisma/
+│
+├── public/
+│
+└── README.md
+```
+
+---
+
+# 🚀 Installation & Setup
+
+## 1️⃣ Clone Repository
+
+```bash
+git clone https://github.com/shahid-shaikh-001/HealthIQ.git
+
+cd HealthIQ
+```
+
+---
+
+## 2️⃣ Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+## 3️⃣ Configure Environment Variables
+
+Create a `.env` file:
+
+```env
+DATABASE_URL=
+
+AUTH_SECRET=
+
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
+
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+
+GEMINI_API_KEY=
+```
+
+---
+
+## 4️⃣ Generate Prisma Client
+
+```bash
+npx prisma generate
+```
+
+---
+
+## 5️⃣ Run Database Migrations
+
+```bash
+npx prisma migrate dev
+```
+
+---
+
+## 6️⃣ Start Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```txt
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+# 🌐 Live Demo
 
-To learn more about Next.js, take a look at the following resources:
+## 🚀 Live Website
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+(https://health-iq-theta.vercel.app/)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📦 GitHub Repository
 
-## Deploy on Vercel
+https://github.com/shahid-shaikh-001/HealthIQ
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# 📊 Core Modules
+
+### Document Processing Engine
+
+* Medical Report Upload
+* AI Text Extraction
+* Report Classification
+* Medical Data Parsing
+
+### Health Analytics Engine
+
+* Metric Tracking
+* Trend Analysis
+* Health Score Generation
+* Abnormality Detection
+
+### AI Intelligence Layer
+
+* Gemini AI Integration
+* Report Summarization
+* Health Recommendations
+* Risk Insights
+
+### User Dashboard
+
+* Health Overview
+* Recent Reports
+* Trends & Insights
+* Profile Management
+
+---
+
+# 📸 Screenshots
+
+> Add screenshots after deployment
+
+```md
+![Dashboard](your-image-link)
+
+![Upload Report](your-image-link)
+
+![Health Score](your-image-link)
+
+![Insights Page](your-image-link)
+```
+
+---
+
+# 📈 Project Highlights
+
+✅ AI-Powered Medical Report Analysis
+
+✅ Health Intelligence Dashboard
+
+✅ Google Authentication
+
+✅ Cloudinary Integration
+
+✅ PostgreSQL + Prisma Architecture
+
+✅ Type-Safe Full Stack Development
+
+✅ Modern Next.js App Router
+
+✅ Production-Ready Scalable Architecture
+
+---
+
+# 🎯 Future Improvements
+
+* Wearable Device Integration
+* Health Risk Prediction Models
+* Doctor Consultation Support
+* Medication Reminders
+* AI Nutrition Recommendations
+* Smart Health Notifications
+* Family Health Profiles
+* Advanced Analytics Dashboard
+
+---
+
+# 👨‍💻 Author
+
+## Shahid Shaikh
+
+GitHub: https://github.com/shahid-shaikh-001
+
+---
+
+# ⭐ Support
+
+If you found this project useful, give it a star ⭐ and support its development.
+
+---
+
+# 📜 License
+
+This project is licensed under the MIT License.
