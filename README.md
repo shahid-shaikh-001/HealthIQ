@@ -241,11 +241,11 @@ https://github.com/shahid-shaikh-001/HealthIQ
 
 <br />
 
-<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/health-score.png" alt="Health Score Page" width="100%" />
+<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/health_score.png" alt="Health Score Page" width="100%" />
 
 <br />
 
-<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/insights.png" alt="Health Insights Page" width="100%" />
+<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/insight.png" alt="Health Insights Page" width="100%" />
 
 ---
 
