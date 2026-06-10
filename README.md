@@ -233,19 +233,19 @@ https://github.com/shahid-shaikh-001/HealthIQ
 
 # 📸 Screenshots
 
-<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/dashboard.png" alt="HealthIQ Dashboard" width="100%" />
+<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/dashboard.png" alt="HealthIQ Dashboard" width="100%" />
 
 <br />
 
-<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/upload.png" alt="Upload Medical Report" width="100%" />
+<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/upload.png" alt="Upload Medical Report" width="100%" />
 
 <br />
 
-<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/health-score.png" alt="Health Score Page" width="100%" />
+<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/health-score.png" alt="Health Score Page" width="100%" />
 
 <br />
 
-<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/screenshots/insights.png" alt="Health Insights Page" width="100%" />
+<img src="https://raw.githubusercontent.com/shahid-shaikh-001/HealthIQ/main/public/insights.png" alt="Health Insights Page" width="100%" />
 
 ---
 
